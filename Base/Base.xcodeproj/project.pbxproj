@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D104145B1BF0765600077A58 /* NSArray+KeyArray.m in Sources */ = {isa = PBXBuildFile; fileRef = D104145A1BF0765600077A58 /* NSArray+KeyArray.m */; };
+		D104145F1BF07EFB00077A58 /* BaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D104145E1BF07EFB00077A58 /* BaseModel.m */; };
 		D10C27841BD77F08002DEF37 /* RequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D10C27831BD77F08002DEF37 /* RequestManager.m */; };
 		D10C27881BD781B0002DEF37 /* UserData.m in Sources */ = {isa = PBXBuildFile; fileRef = D10C27871BD781B0002DEF37 /* UserData.m */; };
 		D10C278C1BD78223002DEF37 /* FatherViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D10C278B1BD78223002DEF37 /* FatherViewController.m */; };
@@ -77,6 +78,8 @@
 		C79E7FEF697FEC0C3CB28DBA /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		D10414591BF0765600077A58 /* NSArray+KeyArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+KeyArray.h"; sourceTree = "<group>"; };
 		D104145A1BF0765600077A58 /* NSArray+KeyArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+KeyArray.m"; sourceTree = "<group>"; };
+		D104145D1BF07EFB00077A58 /* BaseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseModel.h; sourceTree = "<group>"; };
+		D104145E1BF07EFB00077A58 /* BaseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseModel.m; sourceTree = "<group>"; };
 		D10C27821BD77F08002DEF37 /* RequestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequestManager.h; sourceTree = "<group>"; };
 		D10C27831BD77F08002DEF37 /* RequestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RequestManager.m; sourceTree = "<group>"; };
 		D10C27861BD781B0002DEF37 /* UserData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserData.h; sourceTree = "<group>"; };
@@ -217,6 +220,15 @@
 				1CC831B74634ADDBCCE931B1 /* libPods.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D104145C1BF07EE900077A58 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D104145D1BF07EFB00077A58 /* BaseModel.h */,
+				D104145E1BF07EFB00077A58 /* BaseModel.m */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		D10C27811BD77F03002DEF37 /* NetPost */ = {
@@ -378,6 +390,7 @@
 		D1FDF52F1BD7655700E15537 /* Base */ = {
 			isa = PBXGroup;
 			children = (
+				D104145C1BF07EE900077A58 /* Model */,
 				D10C27C11BD784D0002DEF37 /* Section */,
 				D10C278D1BD782ED002DEF37 /* Define */,
 				D10C27891BD781F9002DEF37 /* SuperClass */,
@@ -752,6 +765,7 @@
 				D10C27B11BD78453002DEF37 /* IQNSArray+Sort.m in Sources */,
 				D1FDF5E21BD771F100E15537 /* MBButtonWithFontAdapter.m in Sources */,
 				D1FDF5C71BD7719300E15537 /* SBJson4StreamParser.m in Sources */,
+				D104145F1BF07EFB00077A58 /* BaseModel.m in Sources */,
 				D1FDF5C91BD7719300E15537 /* SBJson4StreamTokeniser.m in Sources */,
 				D10C27B51BD78453002DEF37 /* IQKeyboardReturnKeyHandler.m in Sources */,
 				D1FDF59C1BD770AD00E15537 /* UIImage+Water.m in Sources */,
