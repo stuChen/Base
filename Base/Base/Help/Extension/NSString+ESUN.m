@@ -10,7 +10,7 @@
 
 @implementation NSString (ESUN)
 //
-- (NSString *)SaharaTime {
+- (NSString *)UTCTimeString {
     NSString *time = self;
     if (self) {
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
@@ -165,5 +165,55 @@
         NSString *chinese = [sumStr substringToIndex:sumStr.length-1];
         return chinese;
     }
+}
+//与当前时间之差
+-(NSString *)timeBetweenNow
+{
+    NSString *nowDate = self;
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:[nowDate longLongValue] / 1000];
+    
+    
+    NSDate* current_date = [NSDate date];
+    
+    NSTimeInterval time = [current_date timeIntervalSinceDate:date];//间隔的秒数
+    int month  = ((int)time)/(3600*24*30);
+    int days   =  ((int)time)/(3600*24);
+    int hours  = ((int)time)%(3600*24)/3600;
+    int minute = ((int)time)%(3600*24)/60;
+    
+    NSString *dateContent;
+    
+    if(month!=0){
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+        NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+        [dateFormatter setTimeZone:timeZone];
+        dateContent = [dateFormatter stringFromDate:date];
+        
+        dateContent = [NSString stringWithFormat:@"%@%i%@",@"   ",month,@"个月前"];
+        
+    }else if(days!=0){
+        
+        dateContent = [NSString stringWithFormat:@"%@%i%@",@"   ",days,@"天前"];
+    }else if(hours!=0){
+        
+        dateContent = [NSString stringWithFormat:@"%@%i%@",@"   ",hours,@"小时前"];
+    }else {
+        
+        dateContent = [NSString stringWithFormat:@"%@%i%@",@"   ",minute,@"分钟前"];
+    }
+    
+    //    NSString *dateContent=[[NSString alloc] initWithFormat:@"%i天%i小时",days,hours];
+    return dateContent;
+}
+//获取字符串高宽
+- (CGSize)sizeWithFont:(UIFont *)font Size:(CGSize)size {
+    NSDictionary *attribute = @{NSFontAttributeName:font};
+    
+    CGSize labelsize = [self boundingRectWithSize:size
+                                          options: NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin |NSStringDrawingUsesFontLeading
+                                       attributes:attribute
+                                          context:nil].size;
+    return labelsize;
 }
 @end

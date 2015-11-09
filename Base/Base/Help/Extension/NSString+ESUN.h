@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 @interface NSString (ESUN)
 
-- (NSString *)SaharaTime;
+- (NSString *)UTCTimeString;
 
 - (NSString *)dateString;//获得时间
 /**
@@ -18,4 +18,8 @@
 - (NSString *)dateStringForNet;
 /*手机号码验证 MODIFIED BY HELENSONG*/
 - (BOOL)isPhoneNumber;
+//与当前时间之差
+-(NSString *)timeBetweenNow;
+//获取字符串高宽
+- (CGSize)sizeWithFont:(UIFont *)font Size:(CGSize)size;
 @end
