@@ -15,8 +15,14 @@
          loding:(NSString *)loding
             dic:(NSDictionary *)dic
        response:(void(^)(id response))response;
++ (void)GETUrl:(NSString *)url
+        loding:(NSString *)loding
+           dic:(NSDictionary *)dic
+      response:(void(^)(id response))response;
 
 //上传图片
 + (void)updatePic:(NSData *)data
          response:(void (^)(id response))callBack;
+//上传多张图片
++(void)updatePics:(NSArray *)pics response:(void (^)(id response))callBack;
 @end

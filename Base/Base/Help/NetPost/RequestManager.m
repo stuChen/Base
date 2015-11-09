@@ -31,39 +31,87 @@
         [SVProgressHUD showWithStatus:loding];
     }
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.requestSerializer   = [AFHTTPRequestSerializer serializer];
-    [manager.requestSerializer setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    [manager.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    manager.requestSerializer   = [AFJSONRequestSerializer serializer];
+    [manager.requestSerializer setValue:@"application/json"forHTTPHeaderField:@"Accept"];
+    [manager.requestSerializer setValue:@"application/json; charset=utf-8"forHTTPHeaderField:@"Content-Type"];
     manager.requestSerializer.timeoutInterval = 20;
     //responseSerializer
     AFJSONResponseSerializer *responseSerializer = [AFJSONResponseSerializer serializer];
-    NSMutableSet *acceptContentType = [[responseSerializer acceptableContentTypes] mutableCopy];
-    [acceptContentType addObject:@"text/html"];
+    NSSet *acceptContentType = [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript",@"text/html", @"text/plain", nil];
     [responseSerializer setAcceptableContentTypes:acceptContentType];
     manager.responseSerializer = responseSerializer;
+    //在向服务端发送请求状态栏显示网络活动标志：
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     //请求
     [manager POST:url
-       parameters:nil
+       parameters:dic
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              //请求结束状态栏隐藏网络活动标志：
+              [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
               response(responseObject);
           } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              //请求结束状态栏隐藏网络活动标志：
+              [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
               response(nil);
           }];
     
 }
-
++ (void)GETUrl:(NSString *)url
+        loding:(NSString *)loding
+           dic:(NSDictionary *)dic
+      response:(void(^)(id response))response {
+    /**
+     *  @brief  检查是否网络畅通
+     */
+    AFNetworkReachabilityManager *afNetworkReachabilityManager = [AFNetworkReachabilityManager sharedManager];
+    [afNetworkReachabilityManager startMonitoring];
+    [afNetworkReachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status)
+     {
+         if (status == AFNetworkReachabilityStatusNotReachable) {
+             [SVProgressHUD showErrorWithStatus:@"无网络连接！"];
+             return;
+         }
+     }];
+    [afNetworkReachabilityManager stopMonitoring];
+    //加载图
+    if (loding) {
+        [SVProgressHUD showWithStatus:loding];
+    }
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.requestSerializer   = [AFJSONRequestSerializer serializer];
+    [manager.requestSerializer setValue:@"application/json"forHTTPHeaderField:@"Accept"];
+    [manager.requestSerializer setValue:@"application/json; charset=utf-8"forHTTPHeaderField:@"Content-Type"];
+    manager.requestSerializer.timeoutInterval = 20;
+    //responseSerializer
+    AFJSONResponseSerializer *responseSerializer = [AFJSONResponseSerializer serializer];
+    NSSet *acceptContentType = [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript",@"text/html", @"text/plain", nil];
+    [responseSerializer setAcceptableContentTypes:acceptContentType];
+    manager.responseSerializer = responseSerializer;
+    //在向服务端发送请求状态栏显示网络活动标志：
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    //请求
+    [manager GET:url parameters:dic success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        //请求结束状态栏隐藏网络活动标志：
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        response(responseObject);
+    } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+        //请求结束状态栏隐藏网络活动标志：
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        response(nil);
+    }];
+}
 //上传图片
 +(void)updatePic:(NSData *)data response:(void (^)(id response))callBack
 {
     NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer]
                                     multipartFormRequestWithMethod:@"POST"
-                                    URLString:@""
+                                    URLString:@"http://125.71.215.141:4000/crm/api/v1/attachments/upload"
                                     parameters:nil
                                     constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
                                         [formData appendPartWithFileData:data name:@"111" fileName:@"avatar.png" mimeType:@"image/jpeg"];
                                     }
                                     error:nil];
-
+    
     AFURLSessionManager *manager = [[AFURLSessionManager alloc]
                                     initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     
@@ -85,8 +133,80 @@
                                                               }];
     [uploadTask resume];
 }
-
-
+//上传多张图片
++(void)updatePics:(NSArray *)pics response:(void (^)(id response))callBack
+{
+    
+    NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer]
+                                    multipartFormRequestWithMethod:@"POST"
+                                    URLString:@"http://125.71.215.141:4000/crm/api/v1/attachments/upload"
+                                    parameters:nil
+                                    constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+                                        for (int i = 0;i < pics.count; i++) {
+                                            UIImage *image = pics[i];
+                                            NSData *data = UIImageJPEGRepresentation(image, 0.3);
+                                            [formData appendPartWithFileData:data name:[NSString stringWithFormat:@"1%d",i] fileName:@"avatar.png" mimeType:@"image/jpeg"];
+                                        }
+                                        
+                                    }
+                                    error:nil];
+    
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc]
+                                    initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    
+    NSProgress *progress = nil;
+    
+    NSURLSessionUploadTask *uploadTask = [manager uploadTaskWithStreamedRequest:request
+                                                                       progress:&progress
+                                                              completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+                                                                  
+                                                                  if (error)
+                                                                  {
+                                                                      callBack(nil);
+                                                                      
+                                                                  } else
+                                                                  {
+                                                                      callBack(responseObject);
+                                                                  }
+                                                                  
+                                                              }];
+    [uploadTask resume];
+}
+//上传图片
++(void)AA:(NSData *)data response:(void (^)(id response))callBack
+{
+    NSMutableURLRequest *request = [[AFHTTPRequestSerializer serializer]
+                                    multipartFormRequestWithMethod:@"POST"
+                                    URLString:@""
+                                    parameters:nil
+                                    constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+                                        [formData appendPartWithHeaders:@{@"Content-Type":@"application/json",
+                                                                          @"Accept":@"*/*"}
+                                                                   body:data];
+                                    }
+                                    error:nil];
+    
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc]
+                                    initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    
+    NSProgress *progress = nil;
+    
+    NSURLSessionUploadTask *uploadTask = [manager uploadTaskWithStreamedRequest:request
+                                                                       progress:&progress
+                                                              completionHandler:^(NSURLResponse *response, id responseObject, NSError *error) {
+                                                                  
+                                                                  if (error)
+                                                                  {
+                                                                      callBack(nil);
+                                                                      
+                                                                  } else
+                                                                  {
+                                                                      callBack(responseObject);
+                                                                  }
+                                                                  
+                                                              }];
+    [uploadTask resume];
+}
 
 
 //
